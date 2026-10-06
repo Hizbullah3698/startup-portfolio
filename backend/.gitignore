@@ -1,0 +1,21 @@
+# Python virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Environment configuration (Keep .env.example committed)
+.env
+.env.local
+.env.*.local
+
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# IDE and OS settings
+.vscode/
+.idea/
+.DS_Store
