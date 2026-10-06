@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens
+   Breakpoints mirror the Framer project:
+   phone < 810px · tablet 810–1199px · desktop ≥ 1200px
+------------------------------------------------------------------- */
+@theme {
+  --breakpoint-md: 50.625rem; /* 810px */
+  --breakpoint-lg: 75rem; /* 1200px */
+
+  --color-background: #111112;
+  --color-surface: #1a1a1b;
+  --color-surface-raised: #232325;
+  --color-card: #151516;
+  --color-card-line: #323235;
+  --color-line: #2a2a2c;
+  --color-text: #f2f2f2;
+  --color-text-soft: #cfcfcf;
+  --color-muted: #8e8e93;
+  --color-ticker: #6e6e73;
+  --color-accent: #ea0044;
+  --color-accent-hover: #ff1a5c;
+  --color-accent-deep: #a8002f;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-marker: var(--font-permanent-marker), cursive;
+
+  --container-content: 68.75rem; /* 1100px */
+  --container-narrow: 50rem; /* 800px */
+}
+
+/* ------------------------------------------------------------------
+   Typography scale (Framer text styles)
+------------------------------------------------------------------- */
+@utility text-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  @variant md {
+    font-size: 112px;
+  }
+  @variant lg {
+    font-size: 184px;
+  }
+}
+
+@utility text-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  @variant md {
+    font-size: 48px;
+  }
+  @variant lg {
+    font-size: 60px;
+  }
+}
+
+@utility text-h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  @variant md {
+    font-size: 26px;
+  }
+  @variant lg {
+    font-size: 30px;
+  }
+}
+
+@utility text-h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+@utility text-quote {
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  @variant md {
+    font-size: 24px;
+  }
+  @variant lg {
+    font-size: 28px;
+  }
+}
+
+@utility text-body-lg {
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+@utility text-body {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+@utility text-small {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+@utility text-label {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Shared horizontal gutter used by every section */
+@utility section-x {
+  padding-inline: 16px;
+  @variant md {
+    padding-inline: 40px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Base
+------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-text-soft font-sans antialiased;
+    font-feature-settings: "cv03", "cv04", "cv09", "cv11";
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  [id] {
+    scroll-margin-top: 96px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
