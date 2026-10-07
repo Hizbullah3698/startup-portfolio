@@ -650,6 +650,40 @@ def run_tests() -> bool:
         else:
             fail("Deleted inquiry should be 404", f"got {code}")
 
+    # ---- Part 6A -- Admin Endpoints ----
+    print(f"\n{BOLD}=== PART 6A -- Admin Endpoints ==={RESET}")
+
+    code, _ = get("/api/auth/me")
+    if code == 401:
+        ok("GET /api/auth/me (no token) -> 401")
+    else:
+        fail("GET /api/auth/me (no token)", f"expected 401, got {code}")
+
+    code, body = get("/api/auth/me", token=token)
+    if code == 200 and isinstance(body, dict) and body.get("username") == "admin":
+        ok("GET /api/auth/me (auth) -> 200 with admin user details")
+    else:
+        fail("GET /api/auth/me (auth)", f"code={code} body={body}")
+
+    code, _ = get("/api/admin/stats")
+    if code == 401:
+        ok("GET /api/admin/stats (no token) -> 401")
+    else:
+        fail("GET /api/admin/stats (no token)", f"expected 401, got {code}")
+
+    code, body = get("/api/admin/stats", token=token)
+    if (
+        code == 200
+        and isinstance(body, dict)
+        and "total_projects" in body
+        and "total_services" in body
+        and "total_testimonials" in body
+        and "total_inquiries" in body
+    ):
+        ok("GET /api/admin/stats (auth) -> 200 with dashboard metrics")
+    else:
+        fail("GET /api/admin/stats (auth)", f"code={code} body={body}")
+
     # Summary
     total = len(passed) + len(failed)
     print(f"\n{BOLD}{'='*50}{RESET}")
