@@ -22,7 +22,9 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.security import get_current_admin
 from app.database import get_db
+from app.models.admin import Admin
 from app.models.contact import ContactInquiry, InquiryStatus
 from app.schemas.contact import (
     ContactInquiryCreate,
@@ -105,6 +107,7 @@ def list_inquiries(
         description="Filter inquiries by status (new, read, replied, archived)",
     ),
     db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
 ) -> list[ContactInquiry]:
     stmt = select(ContactInquiry)
 
@@ -128,7 +131,11 @@ def list_inquiries(
     ),
     status_code=status.HTTP_200_OK,
 )
-def get_inquiry(inquiry_id: int, db: Session = Depends(get_db)) -> ContactInquiry:
+def get_inquiry(
+    inquiry_id: int,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> ContactInquiry:
     return _get_inquiry_or_404(inquiry_id, db)
 
 
@@ -146,7 +153,10 @@ def get_inquiry(inquiry_id: int, db: Session = Depends(get_db)) -> ContactInquir
     status_code=status.HTTP_200_OK,
 )
 def update_inquiry(
-    inquiry_id: int, payload: ContactInquiryUpdate, db: Session = Depends(get_db)
+    inquiry_id: int,
+    payload: ContactInquiryUpdate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
 ) -> ContactInquiry:
     inquiry = _get_inquiry_or_404(inquiry_id, db)
 
@@ -178,7 +188,11 @@ def update_inquiry(
     ),
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_inquiry(inquiry_id: int, db: Session = Depends(get_db)) -> None:
+def delete_inquiry(
+    inquiry_id: int,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> None:
     inquiry = _get_inquiry_or_404(inquiry_id, db)
     db.delete(inquiry)
     db.commit()

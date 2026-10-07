@@ -17,7 +17,9 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.security import get_current_admin
 from app.database import get_db
+from app.models.admin import Admin
 from app.models.testimonial import Testimonial
 from app.schemas.testimonial import (
     TestimonialCreate,
@@ -94,7 +96,9 @@ def get_testimonial(testimonial_id: int, db: Session = Depends(get_db)) -> Testi
     status_code=status.HTTP_201_CREATED,
 )
 def create_testimonial(
-    payload: TestimonialCreate, db: Session = Depends(get_db)
+    payload: TestimonialCreate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
 ) -> Testimonial:
     testimonial = Testimonial(**payload.model_dump())
     db.add(testimonial)
@@ -121,7 +125,10 @@ def create_testimonial(
     status_code=status.HTTP_200_OK,
 )
 def update_testimonial(
-    testimonial_id: int, payload: TestimonialUpdate, db: Session = Depends(get_db)
+    testimonial_id: int,
+    payload: TestimonialUpdate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
 ) -> Testimonial:
     testimonial = _get_testimonial_or_404(testimonial_id, db)
 
@@ -150,7 +157,11 @@ def update_testimonial(
     ),
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_testimonial(testimonial_id: int, db: Session = Depends(get_db)) -> None:
+def delete_testimonial(
+    testimonial_id: int,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> None:
     testimonial = _get_testimonial_or_404(testimonial_id, db)
     db.delete(testimonial)
     db.commit()

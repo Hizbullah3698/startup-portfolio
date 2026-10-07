@@ -31,6 +31,16 @@ class Settings(BaseSettings):
     # Database
     database_url: str = ""
 
+    # JWT Authentication
+    secret_key: str = ""
+    access_token_expire_minutes: int = 30
+    jwt_algorithm: str = "HS256"
+
+    # Admin Bootstrap User
+    admin_username: str = ""
+    admin_email: str = ""
+    admin_password: str = ""
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _validate_cors(cls, v: str) -> str:

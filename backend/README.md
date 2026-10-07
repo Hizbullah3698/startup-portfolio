@@ -8,7 +8,7 @@ This FastAPI backend serves as the core API service for a dynamic freelancing an
 
 ## Current Part
 
-**Part 4 — Services, Testimonials & Contact/Inquiries API** [Completed]
+**Part 5 — Admin Authentication & Security** [Completed]
 
 ---
 
@@ -124,7 +124,23 @@ pip install -r requirements.txt
 Copy-Item .env.example .env
 ```
 
-Update `.env` with your actual local PostgreSQL password in `DATABASE_URL`.
+Update `.env` with your actual local PostgreSQL password in `DATABASE_URL` and secure secrets for JWT and admin credentials.
+
+---
+
+## Admin Setup (Bootstrap)
+
+An initial admin user is required to authenticate requests. A safe local bootstrap script configures the first admin using credentials from the `.env` file without exposing a public registration endpoint.
+
+### Run Bootstrap
+
+Make sure your server is stopped, and run:
+
+```powershell
+.\venv\Scripts\python.exe bootstrap_admin.py
+```
+
+This reads `ADMIN_USERNAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` from `.env`, creates the initial admin user in PostgreSQL, and hashes the password securely using `bcrypt`.
 
 ---
 
@@ -154,7 +170,11 @@ Access the application at `http://127.0.0.1:8000`.
 
 ## API Endpoints Summary
 
-> ⚠️ **Authentication Note**: Admin management endpoints (GET/PUT/DELETE for contact inquiries, write operations for projects, services, testimonials) will be protected by JWT authentication in **Part 5**.
+> 🔒 **Authentication Note**: Admin management endpoints (write operations for projects, services, testimonials, and all contact management except public submit) are protected by JWT authentication using the `Authorization: Bearer <token>` header mechanism.
+
+### 0. Authentication (`/api/auth`)
+
+- `POST /api/auth/login` — **Public**. Exchange form data (`username`, `password`) for an `access_token`.
 
 ### 1. Core & Health Endpoints
 
@@ -172,11 +192,11 @@ Access the application at `http://127.0.0.1:8000`.
 
 ### 3. Services API (`/api/services`)
 
-- `GET /api/services/` — List services (ordered by `display_order` asc, `created_at` desc; filter by `featured`, pagination via `skip` & `limit`)
-- `GET /api/services/{id}` — Get single service by ID
-- `POST /api/services/` — Create new service
-- `PUT /api/services/{id}` — Update service
-- `DELETE /api/services/{id}` — Delete service
+- `GET /api/services/` — **Public**. List services (ordered by `display_order` asc, `created_at` desc; filter by `featured`, pagination via `skip` & `limit`)
+- `GET /api/services/{id}` — **Public**. Get single service by ID
+- `POST /api/services/` — **🔒 Protected**. Create new service
+- `PUT /api/services/{id}` — **🔒 Protected**. Update service
+- `DELETE /api/services/{id}` — **🔒 Protected**. Delete service
 
 ### 4. Testimonials API (`/api/testimonials`)
 
@@ -400,7 +420,7 @@ The test suite validates:
 - [x] **Part 2 — PostgreSQL Database Setup**
 - [x] **Part 3 — Projects CRUD API**
 - [x] **Part 4 — Services, Testimonials & Contact API**
-- [ ] **Part 5 — Admin Authentication & Security**
+- [x] **Part 5 — Admin Authentication & Security**
 - [ ] **Part 6 — Admin Dashboard/API Integration**
 - [ ] **Part 7 — Frontend ↔ Backend Integration**
 - [ ] **Part 8 — Deployment & Reusable Template**

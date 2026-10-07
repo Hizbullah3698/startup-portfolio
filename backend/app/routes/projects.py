@@ -18,6 +18,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.core.security import get_current_admin
+from app.models.admin import Admin
 from app.models.project import Project
 from app.schemas.project import ProjectCreate, ProjectResponse, ProjectUpdate
 
@@ -105,7 +107,11 @@ def get_project(project_id: int, db: Session = Depends(get_db)) -> Project:
     ),
     status_code=status.HTTP_201_CREATED,
 )
-def create_project(payload: ProjectCreate, db: Session = Depends(get_db)) -> Project:
+def create_project(
+    payload: ProjectCreate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> Project:
     # Duplicate slug check
     if _slug_exists(payload.slug, db):
         raise HTTPException(
@@ -141,7 +147,10 @@ def create_project(payload: ProjectCreate, db: Session = Depends(get_db)) -> Pro
     status_code=status.HTTP_200_OK,
 )
 def update_project(
-    project_id: int, payload: ProjectUpdate, db: Session = Depends(get_db)
+    project_id: int,
+    payload: ProjectUpdate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
 ) -> Project:
     project = _get_project_or_404(project_id, db)
 
@@ -182,7 +191,11 @@ def update_project(
     ),
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_project(project_id: int, db: Session = Depends(get_db)) -> None:
+def delete_project(
+    project_id: int,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> None:
     project = _get_project_or_404(project_id, db)
     db.delete(project)
     db.commit()

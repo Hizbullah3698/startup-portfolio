@@ -18,6 +18,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.core.security import get_current_admin
+from app.models.admin import Admin
 from app.models.service import Service
 from app.schemas.service import ServiceCreate, ServiceResponse, ServiceUpdate
 
@@ -99,7 +101,11 @@ def get_service(service_id: int, db: Session = Depends(get_db)) -> Service:
     ),
     status_code=status.HTTP_201_CREATED,
 )
-def create_service(payload: ServiceCreate, db: Session = Depends(get_db)) -> Service:
+def create_service(
+    payload: ServiceCreate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> Service:
     if _slug_exists(payload.slug, db):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -131,7 +137,10 @@ def create_service(payload: ServiceCreate, db: Session = Depends(get_db)) -> Ser
     status_code=status.HTTP_200_OK,
 )
 def update_service(
-    service_id: int, payload: ServiceUpdate, db: Session = Depends(get_db)
+    service_id: int,
+    payload: ServiceUpdate,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
 ) -> Service:
     service = _get_service_or_404(service_id, db)
 
@@ -168,7 +177,11 @@ def update_service(
     ),
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_service(service_id: int, db: Session = Depends(get_db)) -> None:
+def delete_service(
+    service_id: int,
+    db: Session = Depends(get_db),
+    current_admin: Admin = Depends(get_current_admin),
+) -> None:
     service = _get_service_or_404(service_id, db)
     db.delete(service)
     db.commit()
