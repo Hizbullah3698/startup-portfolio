@@ -12,7 +12,6 @@ export default function AdminLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [user, setUser] = useState<AdminUser | null>(null);
 
   const isLoginPage = pathname === "/admin/login";
