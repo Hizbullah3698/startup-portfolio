@@ -270,6 +270,10 @@ export async function getAdminInquiries(
   return adminFetch<ContactInquiry[]>(`/api/contact/?${query.toString()}`);
 }
 
+export async function getInquiry(id: number): Promise<ContactInquiry> {
+  return adminFetch<ContactInquiry>(`/api/contact/${id}`);
+}
+
 export async function updateInquiryStatus(
   id: number,
   data: ContactInquiryUpdate

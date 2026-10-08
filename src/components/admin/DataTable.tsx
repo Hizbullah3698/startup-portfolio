@@ -12,6 +12,7 @@ interface DataTableProps<T> {
   loading?: boolean;
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
+  editLabel?: string;
 }
 
 export function DataTable<T extends { id: string | number }>({
@@ -19,7 +20,8 @@ export function DataTable<T extends { id: string | number }>({
   columns,
   loading,
   onEdit,
-  onDelete
+  onDelete,
+  editLabel = "Edit"
 }: DataTableProps<T>) {
   if (loading) {
     return <div className="text-gray-400 p-4">Loading data...</div>;
@@ -58,7 +60,7 @@ export function DataTable<T extends { id: string | number }>({
                         onClick={() => onEdit(item)}
                         className="text-blue-500 hover:text-blue-400 transition-colors"
                       >
-                        Edit
+                        {editLabel}
                       </button>
                     )}
                     {onDelete && (
