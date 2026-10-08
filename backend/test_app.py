@@ -20,7 +20,8 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 # ---------------------------------------------------------------------------
 # Output helpers
 # ---------------------------------------------------------------------------
@@ -243,7 +244,7 @@ def run_tests() -> bool:
     token = None
 
     login_data = urllib.parse.urlencode(
-        {"username": "admin", "password": "adminpass123"}
+       {"username": ADMIN_USERNAME, "password": ADMIN_PASSWORD}
     )
     code, body = post(
         "/api/auth/login", login_data, ct="application/x-www-form-urlencoded"
@@ -251,7 +252,7 @@ def run_tests() -> bool:
     if code == 200 and isinstance(body, dict) and "access_token" in body:
         token = body["access_token"]
         ok("POST /api/auth/login -- successfully authenticated as admin")
-        if "adminpass123" in str(body):
+        if ADMIN_PASSWORD in str(body):
             fail("POST /api/auth/login", "Password leaked in response!")
             return False
     else:

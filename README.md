@@ -82,3 +82,29 @@ Colours, fonts, breakpoints and the type scale are defined once in `src/app/glob
 | Accordion                 | `ui/Accordion.tsx`                          |
 
 All motion respects `prefers-reduced-motion`.
+
+## Part 6: Admin Dashboard
+The admin dashboard allows managing projects, services, testimonials, and contact inquiries.
+
+### Setup
+1. **Backend:**
+   Ensure the backend is running on port 8001:
+   ```bash
+   cd backend
+   .\venv\Scripts\Activate
+   uvicorn app.main:app --host 127.0.0.1 --port 8001
+   ```
+
+2. **Frontend:**
+   Create a `.env.local` file in the frontend root based on `.env.local.example`:
+   ```env
+   NEXT_PUBLIC_API_URL=http://127.0.0.1:8001
+   ```
+   Start the frontend:
+   ```bash
+   npm run dev
+   ```
+
+### Admin Access
+- **URL:** `http://localhost:3000/admin`
+- **Login:** Use the admin username and password set in your `backend/.env` file (`ADMIN_USERNAME` and `ADMIN_PASSWORD`). Choose your own strong password and never commit `.env`.
