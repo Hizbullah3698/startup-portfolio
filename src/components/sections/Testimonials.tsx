@@ -5,13 +5,15 @@ import { Marquee } from "@/components/ui/Marquee";
 import { RevealText } from "@/components/ui/RevealText";
 import { Stars } from "@/components/ui/Stars";
 import { site } from "@/data/site";
-import { testimonials } from "@/data/testimonials";
+import { getTestimonials } from "@/lib/publicApi";
 import { accentSegments } from "@/lib/text";
 import { cn, getInitials } from "@/lib/utils";
 import type { Testimonial } from "@/types";
 
 /** Heading with rating badge and a full-bleed, auto-scrolling testimonial carousel. */
-export function Testimonials() {
+export async function Testimonials() {
+  const testimonials = await getTestimonials();
+
   return (
     <section
       aria-labelledby="testimonials-heading"
@@ -24,7 +26,7 @@ export function Testimonials() {
             segments={accentSegments("Hear from what ", "my clients have to say.")}
           />
         </div>
-        <ClientsBadge />
+        <ClientsBadge testimonials={testimonials} />
       </Container>
 
       <FadeIn offsetY={30} className="mt-14">
@@ -39,7 +41,7 @@ export function Testimonials() {
 }
 
 /** Overlapping client avatars + stars + client count. */
-function ClientsBadge() {
+function ClientsBadge({ testimonials }: { testimonials: Testimonial[] }) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex -space-x-2">

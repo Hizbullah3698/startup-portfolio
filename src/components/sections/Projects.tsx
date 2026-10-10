@@ -3,12 +3,14 @@ import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { Container } from "@/components/ui/Container";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { RevealText } from "@/components/ui/RevealText";
-import { projects } from "@/data/projects";
+import { getProjects } from "@/lib/publicApi";
 import { accentSegments } from "@/lib/text";
 import type { Project } from "@/types";
 
 /** "Latest Projects" heading and the 2×2 project grid. */
-export function Projects() {
+export async function Projects() {
+  const projects = await getProjects();
+
   return (
     <section id="work" className="section-x py-20 md:py-[120px]">
       <Container className="flex flex-col gap-14">
