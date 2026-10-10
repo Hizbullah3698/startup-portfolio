@@ -2,12 +2,15 @@ import { Container } from "@/components/ui/Container";
 import { RevealText } from "@/components/ui/RevealText";
 import { Tag } from "@/components/ui/Tag";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { services, servicesIntro, tools } from "@/data/services";
+import { servicesIntro, tools } from "@/data/services";
+import { getServices } from "@/lib/publicApi";
 import { cn } from "@/lib/utils";
 import type { Service } from "@/types";
 
 /** Sticky intro with tools on the left, stacked tilted service cards on the right. */
-export function Services() {
+export async function Services() {
+  const services = await getServices();
+
   return (
     <section id="services" className="section-x pb-20 pt-20 md:pt-[120px]">
       <Container className="flex flex-col gap-14 lg:flex-row lg:gap-20">
@@ -38,7 +41,7 @@ export function Services() {
         <div className="flex flex-1 flex-col gap-12 px-2.5 pb-[60px] pt-2.5">
           {services.map((service, index) => (
             <div
-              key={service.title}
+              key={`${service.title}-${index}`}
               className="md:sticky"
               style={{ top: `${110 + index * 18}px` }}
             >
@@ -69,13 +72,15 @@ function ServiceCard({ service }: { service: Service }) {
         <h3 className="text-h3 text-text">{title}</h3>
       </div>
       <p className={cn("text-body-lg", isAccent && "text-white")}>{description}</p>
-      <div className="flex flex-wrap gap-2 pt-2">
-        {tags.map((tag) => (
-          <Tag key={tag} tone={tone}>
-            {tag}
-          </Tag>
-        ))}
-      </div>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-2">
+          {tags.map((tag) => (
+            <Tag key={tag} tone={tone}>
+              {tag}
+            </Tag>
+          ))}
+        </div>
+      )}
     </article>
   );
 }

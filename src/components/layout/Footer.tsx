@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ContactForm } from "@/components/layout/ContactForm";
 import { Container } from "@/components/ui/Container";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { RevealText } from "@/components/ui/RevealText";
@@ -63,6 +64,8 @@ export function Footer() {
             </div>
           </ContactItem>
         </div>
+
+        <ContactForm />
 
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-2.5">

@@ -1,11 +1,11 @@
 import { Container } from "@/components/ui/Container";
 import { RevealText } from "@/components/ui/RevealText";
-import { featuredTestimonial } from "@/data/testimonials";
+import { getFeaturedTestimonial } from "@/lib/publicApi";
 import { getInitials } from "@/lib/utils";
 
 /** A single, centred client quote between the projects and services. */
-export function FeaturedQuote() {
-  const { quote, name, role } = featuredTestimonial;
+export async function FeaturedQuote() {
+  const { quote, name, role } = await getFeaturedTestimonial();
 
   return (
     <section aria-label="Client quote" className="section-x border-y border-line py-16 md:py-24">
