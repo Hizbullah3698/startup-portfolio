@@ -4,7 +4,8 @@ import { services as localServices } from "@/data/services";
 import { testimonials as localTestimonials } from "@/data/testimonials";
 import type { IconComponent, Project, Service, Testimonial } from "@/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8001";
+/** Optional. When unset the site uses the static data in src/data. */
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 const REQUEST_TIMEOUT_MS = 4000;
 const REVALIDATE_SECONDS = 60;
 const SUMMARY_MAX_LENGTH = 110;
@@ -25,6 +26,7 @@ interface ApiProject {
  * (network error, timeout, non-2xx, invalid JSON) so callers can fall back.
  */
 async function publicFetch<T>(endpoint: string): Promise<T | null> {
+  if (!API_BASE) return null;
   try {
     const response = await fetch(`${API_BASE}${endpoint}`, {
       next: { revalidate: REVALIDATE_SECONDS },
