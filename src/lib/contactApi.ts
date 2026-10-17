@@ -1,4 +1,3 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8001";
 const REQUEST_TIMEOUT_MS = 10000;
 
 export interface ContactPayload {
@@ -24,26 +23,22 @@ export class ContactError extends Error {
   }
 }
 
-/** Turn FastAPI's 422 `detail` array into one message per field. */
-function parseFieldErrors(detail: unknown): ContactFieldErrors {
-  const errors: ContactFieldErrors = {};
-  if (!Array.isArray(detail)) return errors;
-
-  for (const item of detail) {
-    const loc: unknown[] = Array.isArray(item?.loc) ? item.loc : [];
-    const field = loc[loc.length - 1];
-    if (typeof field !== "string" || !FIELDS.includes(field as ContactField)) continue;
-    const msg = typeof item.msg === "string" ? item.msg.replace(/^Value error,\s*/i, "") : "";
-    errors[field as ContactField] ??= msg || "This field is not valid.";
+/** Keep only known fields from the route's 422 `errors` object. */
+function parseFieldErrors(errors: unknown): ContactFieldErrors {
+  const result: ContactFieldErrors = {};
+  if (!errors || typeof errors !== "object") return result;
+  for (const field of FIELDS) {
+    const msg = (errors as Record<string, unknown>)[field];
+    if (typeof msg === "string") result[field] = msg;
   }
-  return errors;
+  return result;
 }
 
-/** POST a visitor inquiry to the public contact endpoint. */
+/** POST a visitor inquiry to the Next.js contact route. */
 export async function submitContact(payload: ContactPayload): Promise<void> {
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}/api/contact/`, {
+    response = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -60,7 +55,7 @@ export async function submitContact(payload: ContactPayload): Promise<void> {
   if (response.status === 422) {
     let fieldErrors: ContactFieldErrors = {};
     try {
-      fieldErrors = parseFieldErrors((await response.json())?.detail);
+      fieldErrors = parseFieldErrors((await response.json())?.errors);
     } catch {
       // Fall through to the generic message.
     }
